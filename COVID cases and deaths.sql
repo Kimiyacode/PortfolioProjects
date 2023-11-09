@@ -114,6 +114,18 @@ From PopvsVac
 
 Select Location, Population,date, MAX(total_cases) as HighestInfectionCount,  Max((total_cases/population))*100 as PercentPopulationInfected
 From PortfolioProject..CovidDeaths
---Where location like '%states%'
 Group by Location, Population, date
 order by PercentPopulationInfected desc
+
+
+-- Running the same query but instead showing the highest infection ocunt and percent of popoulation infected for each country in the world
+WITH RankedLocations AS
+(
+SELECT Location, Population, date,total_cases,ROW_NUMBER() OVER (PARTITION BY Location ORDER BY total_cases DESC) AS LocationRank
+  FROM PortfolioProject..CovidDeaths
+  WHERE Continent is not null
+)
+SELECT Location, Population, date, total_cases AS HighestInfectionCount, (total_cases / Population) * 100 AS PercentPopulationInfected
+FROM RankedLocations
+WHERE LocationRank = 1
+ORDER BY  PercentPopulationInfected DESC
