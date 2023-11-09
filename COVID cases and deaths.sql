@@ -104,7 +104,7 @@ From PortfolioProject..CovidDeaths dea
 Join PortfolioProject..CovidVaccinations vac
 	On dea.location = vac.location
 	and dea.date = vac.date
-where dea.continent is not null 
+where dea.continent is not null and vac.new_vaccinations is not null
 )
 Select *, (RollingPeopleVaccinated/Population)*100 as PercentPeopleVaccinated
 From PopvsVac
